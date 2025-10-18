@@ -5,5 +5,5 @@ const server = http.createServer(routes);
 
 const PORT = 3000;
 server.listen(PORT, () => {
-  console.log(`server listening on port ${PORT}`);
+  console.log(`server listening on http://localhost:${PORT}`);
 });
