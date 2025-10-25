@@ -17,5 +17,10 @@
   "bugs": {
     "url": "https://github.com/bienvenudev/nodejs-udemy/issues"
   },
-  "homepage": "https://github.com/bienvenudev/nodejs-udemy#readme"
+  "homepage": "https://github.com/bienvenudev/nodejs-udemy#readme",
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0"
+  }
 }
