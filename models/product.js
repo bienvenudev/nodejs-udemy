@@ -16,14 +16,22 @@ const getProductFromFile = (cb) => {
       return cb([]);
     }
 
-    cb(JSON.parse(data));
+    try {
+      cb(JSON.parse(data));
+      // console.log("data is", data.toString());
+    } catch (err) {
+      console.log("Error parsing JSON:", err);
+      cb([]);
+    }
   });
 };
 
 module.exports = class Product {
   constructor(product) {
     this.title = product.title;
+    this.imageUrl = product.imageUrl;
     this.price = product.price;
+    this.description = product.description;
   }
 
   save() {
@@ -38,5 +46,15 @@ module.exports = class Product {
 
   static fetchAll(cb) {
     getProductFromFile(cb);
+  }
+
+  static fetchByName(productName) {
+    const myPromise = new Promise((resolve, reject) => {
+      getProductFromFile((product) => {
+        const result = product.filter((prod) => prod.title === productName);
+        resolve(result);
+      });
+    });
+    return myPromise;
   }
 };
