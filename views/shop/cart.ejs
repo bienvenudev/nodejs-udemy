@@ -3,4 +3,13 @@
 
     <body>
         <%- include('../includes/navigation.ejs') %>
+        <main>
+            <% if (products.length > 0) { %>
+            <% products.map(product => { %>
+                <p> <%= product.title %> </p>
+            <% }) %>
+            <% } else { %>
+            <h1>Nothing on cart!</h1>
+            <% } %>
+        </main>
         <%- include('../includes/end.ejs') %>
