@@ -53,16 +53,6 @@ module.exports = class Product {
     getProductsFromFile(cb);
   }
 
-  static fetchProduct(ids, cb) {
-    getProductsFromFile((products) => {
-      const cartProducts = ids
-        .map((id) => products.find((prod) => prod.id === id))
-        .filter((product) => product !== undefined);
-      console.log("products from cart are", cartProducts);
-      cb(cartProducts);
-    });
-  }
-
   static findById(id, cb) {
     getProductsFromFile((products) => {
       const product = products.find((p) => p.id === id);
@@ -74,7 +64,6 @@ module.exports = class Product {
     getProductsFromFile((products) => {
       const product = products.find((p) => p.id === id);
       const updatedProducts = products.filter((prod) => prod.id !== id);
-      console.log("now the updatedProducts are", updatedProducts);
       fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
         if (!err) {
           Cart.deleteProduct(id, product.price);
