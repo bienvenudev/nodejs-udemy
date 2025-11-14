@@ -9,4 +9,14 @@ const pool = mysql.createPool({
   password: process.env.DB_PASSWORD,
 });
 
-module.exports = pool.promise();
+const promisePool = pool.promise();
+
+// Test database connection on startup
+promisePool.query('SELECT 1')
+  .then(() => console.log('✅ Database connected successfully'))
+  .catch(err => {
+    console.error('❌ Database connection failed:', err.message);
+    console.error('Please check your database configuration in .env file');
+  });
+
+module.exports = promisePool;

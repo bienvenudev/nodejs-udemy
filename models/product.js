@@ -10,7 +10,19 @@ module.exports = class Product {
   }
 
   save() {
-    return db.execute('INSERT INTO products (title, imageUrl, description, price) VALUES (?, ?, ?, ?)', [this.title, this.imageUrl, this.description, this.price])
+    if (this.id) {
+      // UPDATE existing product
+      return db.execute(
+        'UPDATE products SET title = ?, imageUrl = ?, description = ?, price = ? WHERE id = ?',
+        [this.title, this.imageUrl, this.description, this.price, this.id]
+      );
+    } else {
+      // INSERT new product
+      return db.execute(
+        'INSERT INTO products (title, imageUrl, description, price) VALUES (?, ?, ?, ?)',
+        [this.title, this.imageUrl, this.description, this.price]
+      );
+    }
   }
 
   static fetchAll() {
@@ -18,8 +30,10 @@ module.exports = class Product {
   }
 
   static findById(id) {
-    return db.execute('SELECT * FROM products WHERE products.id = ?', [id])
+    return db.execute('SELECT * FROM products WHERE id = ?', [id]);
   }
 
-  static deleteById(id) {}
+  static deleteById(id) {
+    return db.execute('DELETE FROM products WHERE id = ?', [id]);
+  }
 };

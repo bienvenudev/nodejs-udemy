@@ -26,8 +26,18 @@ exports.postAddProduct = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.deleteById(prodId);
-  res.redirect("/admin/products");
+  Product.deleteById(prodId)
+    .then(() => {
+      res.redirect("/admin/products");
+    })
+    .catch((err) => {
+      console.error("error deleting product from db. Error: ", err);
+      res.status(500).render("admin/products", {
+        pageTitle: "Admin Products",
+        path: "/admin/products",
+        prods: [],
+      });
+    });
 };
 
 exports.getEditProduct = (req, res, next) => {
@@ -38,14 +48,23 @@ exports.getEditProduct = (req, res, next) => {
     return res.redirect("/");
   }
 
-  Product.findById(productId, (product) => {
-    res.render("admin/edit-product", {
-      pageTitle: "Edit Product",
-      path: "/admin/edit-product",
-      editing: editMode,
-      product: product,
+  Product.findById(productId)
+    .then(([rows]) => {
+      const product = rows[0];
+      if (!product) {
+        return res.redirect("/");
+      }
+      res.render("admin/edit-product", {
+        pageTitle: "Edit Product",
+        path: "/admin/edit-product",
+        editing: editMode,
+        product: product,
+      });
+    })
+    .catch((err) => {
+      console.error("error finding product. Error: ", err);
+      res.redirect("/");
     });
-  });
 };
 
 exports.postEditProduct = (req, res, next) => {
@@ -61,8 +80,14 @@ exports.postEditProduct = (req, res, next) => {
     updatedPrice,
     updatedDesc
   );
-  updatedProduct.save();
-  res.redirect("/admin/products");
+  updatedProduct.save()
+    .then(() => {
+      res.redirect("/admin/products");
+    })
+    .catch((err) => {
+      console.error("error updating product in db. Error: ", err);
+      res.redirect("/admin/products");
+    });
 };
 
 exports.getProducts = (req, res, next) => {
@@ -84,12 +109,14 @@ exports.getProductByName = (req, res, next) => {
 
   Product.fetchByName(productName)
     .then((data) => {
-      console.log("here in getProductByName the data = ", data[0]);
       res.render("admin/edit-product", {
         pageTitle: "Edit Product",
         product: data[0],
         path: `/admin/edit-product/${productName}`,
       });
     })
-    .catch((err) => console.log("error while fetching by name", err));
+    .catch((err) => {
+      console.error("error while fetching by name", err);
+      res.redirect("/admin/products");
+    });
 };
