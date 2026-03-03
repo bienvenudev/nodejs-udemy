@@ -117,16 +117,45 @@ exports.postCartDeleteProduct = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
-exports.getOrders = (req, res, next) => {
-  res.render("shop/orders", {
-    pageTitle: "Your Orders",
-    path: "/orders",
-  });
+exports.postOrder = (req, res, next) => {
+  let fetchedCart;
+  req.user
+    .getCart()
+    .then((cart) => {
+      fetchedCart = cart;
+      return cart.getProducts();
+    })
+    .then((products) => {
+      return req.user
+        .createOrder()
+        .then((order) => {
+          return order.addProducts(
+            products.map((product) => {
+              product.orderItem = { quantity: product.cartItem.quantity }; // why add this orderItem thing? where is it coming from and what is its use? why can't i just have quantity? does this overwrite the whole orderItem thing? if yes, why would we want that bcs i think orderItem has not only quantity but id, orderid and productid too;
+              return product;
+            }),
+          );
+        })
+        .catch((err) => console.log(err));
+    })
+    .then((result) => {
+      return fetchedCart.setProducts(null);
+    })
+    .then((result) => {
+      res.redirect("/orders");
+    })
+    .catch((err) => console.log(err));
 };
 
-exports.getCheckout = (req, res, next) => {
-  res.render("shop/checkout", {
-    pageTitle: "Checkout",
-    path: "/checkout",
-  });
+exports.getOrders = (req, res, next) => {
+  req.user
+    .getOrders({ include: ["products"] })
+    .then((orders) => {
+      res.render("shop/orders", {
+        pageTitle: "Your Orders",
+        path: "/orders",
+        orders: orders,
+      });
+    })
+    .catch((err) => console.log(err));
 };
