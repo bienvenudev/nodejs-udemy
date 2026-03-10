@@ -131,7 +131,7 @@ exports.postOrder = (req, res, next) => {
         .then((order) => {
           return order.addProducts(
             products.map((product) => {
-              product.orderItem = { quantity: product.cartItem.quantity }; // why add this orderItem thing? where is it coming from and what is its use? why can't i just have quantity? does this overwrite the whole orderItem thing? if yes, why would we want that bcs i think orderItem has not only quantity but id, orderid and productid too;
+              product.orderItem = { quantity: product.cartItem.quantity };
               return product;
             }),
           );

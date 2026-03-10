@@ -1,12 +1,16 @@
-require("dotenv").config();
+const mongodb = require("mongodb");
 
-const Sequelize = require("sequelize");
+const MongoClient = mongodb.MongoClient;
 
-const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  { dialect: "mysql", host: "localhost" }
-);
+const mongoConnect = (callback) => {
+  MongoClient.connect(
+    "mongodb+srv://cbienvenu007_db_user:ben123@cluster0.3xsf4ve.mongodb.net/?appName=Cluster0",
+  )
+    .then((client) => {
+      console.log("Connected!");
+      callback(client);
+    })
+    .catch((err) => console.log(err));
+};
 
-module.exports = sequelize;
+module.exports = mongoConnect;
