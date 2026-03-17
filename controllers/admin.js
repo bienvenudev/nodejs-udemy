@@ -25,17 +25,17 @@ exports.postAddProduct = (req, res, next) => {
     });
 };
 
-// exports.postDeleteProduct = (req, res, next) => {
-//   const prodId = req.body.productId;
+exports.postDeleteProduct = (req, res, next) => {
+  const prodId = req.body.productId;
 
-//   Product.destroy({ where: { id: prodId } })
-//     .then((result) => {
-//       res.redirect("/admin/products");
-//     })
-//     .catch((err) => {
-//       console.error("Error deleting product:", err);
-//     });
-// };
+  Product.deleteOne(prodId)
+    .then((result) => {
+      res.redirect("/admin/products");
+    })
+    .catch((err) => {
+      console.error("Error deleting product:", err);
+    });
+};
 
 // exports.getEditProduct = (req, res, next) => {
 //   const prodId = req.params.productId;
@@ -103,18 +103,16 @@ exports.postAddProduct = (req, res, next) => {
 //   });
 // };
 
-// exports.getProducts = (req, res, next) => {
-//   // Product.findAll()
-//   req.user
-//     .getProducts()
-//     .then((products) => {
-//       res.render("admin/products", {
-//         prods: products,
-//         pageTitle: "Admin Products",
-//         path: "/admin/products",
-//       });
-//     })
-//     .catch((err) => {
-//       console.error("error retrieving all products. Error: ", err);
-//     });
-// };
+exports.getProducts = (req, res, next) => {
+  Product.fetchAll()
+    .then((products) => {
+      res.render("admin/products", {
+        prods: products,
+        pageTitle: "Admin Products",
+        path: "/admin/products",
+      });
+    })
+    .catch((err) => {
+      console.error("error retrieving all products. Error: ", err);
+    });
+};

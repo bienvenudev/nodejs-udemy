@@ -1,5 +1,5 @@
 const getDb = require("../util/database").getDb;
-const ObjectId = require('mongodb').ObjectId; 
+const ObjectId = require("mongodb").ObjectId;
 
 class Product {
   constructor(title, price, imageUrl, description) {
@@ -40,9 +40,23 @@ class Product {
       .collection("products")
       .find({ _id: new ObjectId(productId) })
       .next()
-      .then(product => {
-        console.log('single product', product);
+      .then((product) => {
+        console.log("single product", product);
         return product;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  static deleteOne(productId) {
+    const db = getDb();
+
+    return db
+      .collection("products")
+      .deleteOne({ _id: new ObjectId(productId) })
+      .then((deleted) => {
+        console.log("the deleted count is", deleted);
       })
       .catch((err) => {
         console.log(err);
