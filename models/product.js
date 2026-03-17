@@ -41,7 +41,6 @@ class Product {
       .find({ _id: new ObjectId(productId) })
       .next()
       .then((product) => {
-        console.log("single product", product);
         return product;
       })
       .catch((err) => {
@@ -57,6 +56,21 @@ class Product {
       .deleteOne({ _id: new ObjectId(productId) })
       .then((deleted) => {
         console.log("the deleted count is", deleted);
+        return deleted;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  static editProduct(modifiedProduct, productId) {
+    const db = getDb();
+
+    return db
+      .collection("products")
+      .replaceOne({ _id: new ObjectId(productId) }, modifiedProduct)
+      .then((result) => {
+        return result;
       })
       .catch((err) => {
         console.log(err);
