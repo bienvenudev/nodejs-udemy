@@ -2,20 +2,28 @@ const getDb = require("../util/database").getDb;
 const ObjectId = require("mongodb").ObjectId;
 
 class Product {
-  constructor(title, price, imageUrl, description) {
+  constructor(title, price, imageUrl, description, id) {
     this.title = title;
     this.price = price;
     this.imageUrl = imageUrl;
     this.description = description;
+    this._id = id;
   }
 
   save() {
     const db = getDb();
-    return db
-      .collection("products")
-      .insertOne(this)
+    let dbOp;
+    if (this._id) {
+      dbOp = db
+        .collection("products")
+        .updateOne({ _id: new ObjectId(this._id) }, { $set: this });
+    } else {
+      dbOp = db.collection("products").insertOne(this);
+    }
+
+    return dbOp
       .then((result) => {
-        console.log(result);
+        return result;
       })
       .catch((err) => console.log(err));
   }
@@ -57,20 +65,6 @@ class Product {
       .then((deleted) => {
         console.log("the deleted count is", deleted);
         return deleted;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  static editProduct(modifiedProduct, productId) {
-    const db = getDb();
-
-    return db
-      .collection("products")
-      .replaceOne({ _id: new ObjectId(productId) }, modifiedProduct)
-      .then((result) => {
-        return result;
       })
       .catch((err) => {
         console.log(err);
